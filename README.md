@@ -3,7 +3,7 @@ Hi! Welcome to my website :D. This is a space I want to use for myself during my
 
 ---
 
-## 📚 Papers I'm Reading
+## Papers I'm Reading
 
 <details>
 <summary><strong>Paper Title Here</strong></summary>
@@ -20,27 +20,21 @@ Hi! Welcome to my website :D. This is a space I want to use for myself during my
 
 ---
 
-## 💼 My Work
+## My Work
 
-### 🔬 My Projects
+### My Projects
 
 <details>
 <summary><strong>Project Title</strong></summary>
 
-**Repository:** [GitHub link](repo_link)  
 **Status:** In progress / Completed  
 **Summary:** Brief description of what the project does and the key technologies used.
 
 ![Project screenshot or thumbnail](image_url_here)
 
-**Links:**
-- [View on GitHub](repo_link)
-- [Live demo](demo_link) (if applicable)
-- [Documentation](docs_link) (if applicable)
-
 </details>
 
-### 📄 My Publications
+### My Publications
 
 <details>
 <summary><strong>Publication Title</strong></summary>
@@ -61,9 +55,9 @@ Hi! Welcome to my website :D. This is a space I want to use for myself during my
 
 ---
 
-## 🎨 Fun
+## Fun
 
-### 🍳 Food I'm Cooking
+### Food I'm Cooking
 
 <details>
 <summary><strong>Dish Name</strong></summary>
@@ -80,7 +74,7 @@ Hi! Welcome to my website :D. This is a space I want to use for myself during my
 
 </details>
 
-### 🎵 Music on My Mind
+### Music on My Mind
 
 <details>
 <summary><strong>Artist - Song Title</strong></summary>
@@ -99,7 +93,7 @@ Hi! Welcome to my website :D. This is a space I want to use for myself during my
 
 </details>
 
-### 📖 Books on My List
+### Books on My List
 
 <details>
 <summary><strong>Book Title by Author</strong></summary>
@@ -120,7 +114,7 @@ Hi! Welcome to my website :D. This is a space I want to use for myself during my
 
 ---
 
-## 💭 Reflections and Random Thoughts
+## Reflections and Random Thoughts
 
 <details>
 <summary><strong>Reflection Title</strong></summary>
