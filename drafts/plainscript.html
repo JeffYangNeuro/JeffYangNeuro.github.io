@@ -1,0 +1,404 @@
+<title>Plainscript</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --ink: #111111;
+    --ink-soft: #4a4a4a;
+    --ink-faint: #8a8a8a;
+    --line: #dddddd;
+    --focus: #111111;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0a0a0a;
+      --ink: #f2f2f2;
+      --ink-soft: #b8b8b8;
+      --ink-faint: #767676;
+      --line: #2a2a2a;
+      --focus: #f2f2f2;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0a0a0a;
+    --ink: #f2f2f2;
+    --ink-soft: #b8b8b8;
+    --ink-faint: #767676;
+    --line: #2a2a2a;
+    --focus: #f2f2f2;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Georgia, "Iowan Old Style", "Times New Roman", ui-serif, serif;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--ink); text-decoration-color: var(--ink-faint); text-underline-offset: 3px; }
+  a:hover { text-decoration-color: var(--ink); }
+  a:focus-visible, button:focus-visible { outline: 1.5px solid var(--focus); outline-offset: 3px; }
+
+  .label {
+    font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 0.7rem;
+    color: var(--ink-faint);
+  }
+
+  .frame {
+    max-width: 740px;
+    margin: 0;
+    padding: 0 clamp(1.5rem, 4vw, 3rem) 0 clamp(1.75rem, 9vw, 8rem);
+  }
+
+  header.hero {
+    padding: 7.5rem 0 5rem;
+  }
+  h1.name {
+    font-size: clamp(2.2rem, 6vw, 3rem);
+    margin: 0 0 0.9rem;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+  p.tagline {
+    font-size: 1.15rem;
+    color: var(--ink-soft);
+    max-width: 50ch;
+    margin: 0 0 2rem;
+  }
+  nav.hero-nav {
+    display: flex;
+    gap: 1.75rem;
+    font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 0.85rem;
+  }
+  nav.hero-nav a { text-decoration: none; border-bottom: 1px solid var(--ink-faint); padding-bottom: 2px; }
+
+  section.block {
+    border-top: 1px solid var(--line);
+  }
+  section.block .label { display: block; margin-bottom: 0.6rem; }
+  section.block h2 {
+    font-weight: 400;
+    font-size: 1.9rem;
+    margin: 0 0 2.25rem;
+  }
+  #papers { padding: 3rem 0 2.5rem; }
+  #work { padding: 5rem 0; }
+  #fun { padding: 3.5rem 0; }
+  #reflections { padding: 5.5rem 0 6rem; }
+
+  .entry {
+    padding: 1.75rem 0;
+    border-top: 1px solid var(--line);
+  }
+  .entry:first-of-type { border-top: none; padding-top: 0; }
+  .entry h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 0 0 0.3rem;
+  }
+  .entry .meta {
+    font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 0.8rem;
+    color: var(--ink-faint);
+    margin-bottom: 0.65rem;
+  }
+  .entry p { margin: 0; color: var(--ink-soft); max-width: 60ch; }
+  .entry .links {
+    margin-top: 0.75rem;
+    display: flex;
+    gap: 1.25rem;
+    font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 0.82rem;
+  }
+
+  .papers-scroller {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: var(--ink-faint) transparent;
+    border-top: 1px solid var(--line);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .papers-scroller { scroll-behavior: smooth; }
+  }
+  .papers-scroller::-webkit-scrollbar { height: 5px; }
+  .papers-scroller::-webkit-scrollbar-track { background: transparent; }
+  .papers-scroller::-webkit-scrollbar-thumb { background: var(--ink-faint); }
+  .papers-scroller::-webkit-scrollbar-thumb:hover { background: var(--ink); }
+
+  .paper-panel {
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+    padding: 2.25rem 0 1.5rem;
+  }
+  .paper-panel h3 { font-size: 1.25rem; font-weight: 700; margin: 0 0 0.3rem; }
+  .paper-panel .meta {
+    font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 0.8rem;
+    color: var(--ink-faint);
+    margin-bottom: 0.9rem;
+  }
+  .paper-panel p { margin: 0; color: var(--ink-soft); max-width: 58ch; }
+  .paper-panel .links {
+    margin-top: 0.9rem;
+    font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 0.82rem;
+  }
+
+  .papers-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 1.1rem;
+    font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+  .papers-toggle button {
+    width: 1.9rem;
+    height: 1.9rem;
+    border: 1px solid var(--line);
+    background: none;
+    color: var(--ink-faint);
+    font-size: 0.72rem;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .papers-toggle button:hover { border-color: var(--ink-faint); color: var(--ink); }
+  .papers-toggle button[aria-current="true"] {
+    border-color: var(--ink);
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .papers-toggle .hint {
+    font-size: 0.72rem;
+    color: var(--ink-faint);
+    margin-left: 0.4rem;
+  }
+
+  .subhead {
+    font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-faint);
+    margin: 0 0 0.5rem;
+  }
+  .subgroup + .subgroup { margin-top: 2.5rem; }
+
+  .fun-row {
+    display: grid;
+    grid-template-columns: 6rem 1fr;
+    gap: 0.4rem 1.5rem;
+    padding: 1.1rem 0;
+    border-top: 1px solid var(--line);
+  }
+  .fun-row:first-of-type { border-top: none; padding-top: 0; }
+  .fun-row .kind {
+    font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-faint);
+    padding-top: 0.2rem;
+  }
+  .fun-row h3 { font-size: 1.05rem; font-weight: 700; margin: 0 0 0.25rem; }
+  .fun-row p { margin: 0; color: var(--ink-soft); }
+
+  blockquote.reflection {
+    margin: 0;
+    font-size: 1.4rem;
+    line-height: 1.55;
+    max-width: 56ch;
+    font-style: italic;
+  }
+  blockquote.reflection cite {
+    display: block;
+    margin-top: 1.1rem;
+    font-style: normal;
+    font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  footer {
+    padding: 3rem 0 5rem;
+    border-top: 1px solid var(--line);
+    font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 0.8rem;
+    color: var(--ink-faint);
+  }
+</style>
+
+<header class="hero">
+  <div class="frame">
+    <h1 class="name">Jeff Yang</h1>
+    <p class="tagline">PhD student in neuroscience. This is where I keep track of what I'm reading, building, cooking, and thinking about.</p>
+    <nav class="hero-nav">
+      <a href="#papers">Papers</a>
+      <a href="#work">Work</a>
+      <a href="#fun">Fun</a>
+      <a href="#reflections">Reflections</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <section class="block" id="papers">
+    <div class="frame">
+      <span class="label">Currently reading</span>
+      <h2>Papers I'm Reading</h2>
+    </div>
+
+    <div class="papers-scroller" id="papers-scroller" tabindex="0" aria-label="Papers I'm reading, scroll or use the buttons below to move between entries">
+      <article class="paper-panel">
+        <div class="frame">
+          <h3>How predictive coding explains sensory gain control</h3>
+          <div class="meta">Placeholder Author et al. &middot; 2024</div>
+          <p>Reframes attention as a precision-weighting problem rather than a resource one. The core claim is that gain isn't allocated by a separate spotlight mechanism but falls directly out of how confident the model is in its own predictions at each level of the hierarchy. That reframing is why it's on the desk right now &mdash; it changes how I'm thinking about the current model, and probably means a chunk of the discussion section needs to be rewritten.</p>
+          <div class="links"><a href="#">Read paper</a></div>
+        </div>
+      </article>
+
+      <article class="paper-panel">
+        <div class="frame">
+          <h3>Denoising calcium traces without losing fast transients</h3>
+          <div class="meta">Placeholder Author &middot; 2023</div>
+          <p>A cleaner alternative to the pipeline I've been running, using a learned prior instead of a fixed exponential kernel. The tradeoff is a heavier compute cost per session, which matters at the scale I'm processing recordings at, but the fast-transient preservation looks noticeably better on the noisy sessions. Worth a re-implementation pass this month before the next batch of imaging comes in.</p>
+          <div class="links"><a href="#">Read paper</a></div>
+        </div>
+      </article>
+
+      <article class="paper-panel">
+        <div class="frame">
+          <h3>A cortical basis for compositional generalization</h3>
+          <div class="meta">Placeholder Author et al. &middot; 2025</div>
+          <p>Argues that generalization to novel combinations relies on a shared low-dimensional code across areas rather than any single region doing the composing. I'm still unconvinced by the behavioral read-out they use to make that claim, but the recording methodology is clean enough that it's worth working through the supplement in full before deciding what I think.</p>
+          <div class="links"><a href="#">Read paper</a></div>
+        </div>
+      </article>
+    </div>
+
+    <div class="frame">
+      <div class="papers-toggle" role="group" aria-label="Jump to paper">
+        <button type="button" aria-current="true">01</button>
+        <button type="button" aria-current="false">02</button>
+        <button type="button" aria-current="false">03</button>
+        <span class="hint">scroll or click to move between entries</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="work">
+    <div class="frame">
+      <span class="label">Projects &amp; publications</span>
+      <h2>My Work</h2>
+
+      <div class="subgroup">
+        <div class="subhead">Projects</div>
+        <article class="entry">
+          <h3>Calcium imaging analysis pipeline</h3>
+          <div class="meta">Python &middot; scikit-image &middot; started 2025</div>
+          <p>End-to-end pipeline from raw two-photon stacks to event-aligned traces, built to replace three separate lab scripts with one reproducible path.</p>
+          <div class="links"><a href="#">Repository</a><a href="#">Notes</a></div>
+        </article>
+      </div>
+
+      <div class="subgroup">
+        <div class="subhead">Publications</div>
+        <article class="entry">
+          <h3>Placeholder title of a first-author manuscript</h3>
+          <div class="meta">Journal Name &middot; 2026 &middot; with Advisor Name et al.</div>
+          <p>One-paragraph summary of the finding, written the way you'd explain it to a labmate over coffee.</p>
+          <div class="links"><a href="#">DOI</a><a href="#">Preprint</a></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="fun">
+    <div class="frame">
+      <span class="label">Off the clock</span>
+      <h2>Fun</h2>
+
+      <div class="fun-row">
+        <div class="kind">Food</div>
+        <div>
+          <h3>Placeholder braised short rib</h3>
+          <p>Sichuan-leaning, three hours, worth every one of them.</p>
+        </div>
+      </div>
+      <div class="fun-row">
+        <div class="kind">Music</div>
+        <div>
+          <h3>Artist &ndash; Song Title</h3>
+          <p>The one that's been on loop during data cleaning this week.</p>
+        </div>
+      </div>
+      <div class="fun-row">
+        <div class="kind">Books</div>
+        <div>
+          <h3>Book Title, Author</h3>
+          <p>Halfway through &mdash; a reaction so far, not a review.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="reflections">
+    <div class="frame">
+      <span class="label">2026-08-13</span>
+      <h2>Reflections</h2>
+      <blockquote class="reflection">
+        A placeholder reflection goes here &mdash; a paragraph or two on something research, life, or science related that's been on your mind.
+        <cite>Research</cite>
+      </blockquote>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="frame">Jeff Yang &middot; updated as things happen.</div>
+</footer>
+
+<script>
+  (function () {
+    var scroller = document.getElementById("papers-scroller");
+    var buttons = Array.prototype.slice.call(document.querySelectorAll(".papers-toggle button"));
+
+    function setActive(index) {
+      buttons.forEach(function (btn, i) {
+        btn.setAttribute("aria-current", i === index ? "true" : "false");
+      });
+    }
+
+    buttons.forEach(function (btn, i) {
+      btn.addEventListener("click", function () {
+        var panel = scroller.children[i];
+        scroller.scrollTo({ left: panel.offsetLeft, behavior: "smooth" });
+      });
+    });
+
+    var ticking = false;
+    scroller.addEventListener("scroll", function () {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function () {
+        var index = Math.round(scroller.scrollLeft / scroller.clientWidth);
+        index = Math.max(0, Math.min(buttons.length - 1, index));
+        setActive(index);
+        ticking = false;
+      });
+    });
+  })();
+</script>
